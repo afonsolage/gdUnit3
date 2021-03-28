@@ -128,10 +128,15 @@ static func build_test_suite_path(resource_path :String) -> String:
 	var file_extension := resource_path.get_extension()
 	var file_name = resource_path.get_file().replace("." + file_extension, "")
 	var test_suite_path :String
+	
+	# is user tmp
+	if resource_path.begins_with("user://tmp"):
+		return resource_path.replace("user://tmp", "user://tmp/test").replace(file_name, "%sTest" % file_name)
+	
 	# at first look up is the script under a "src" folder located
-	var src_folder = resource_path.find("src")
+	var src_folder = resource_path.find("/src/")
 	if src_folder != -1:
-		test_suite_path = resource_path.replace("src", "test")
+		test_suite_path = resource_path.replace("/src/", "/test/")
 	else:
 		var paths = resource_path.split("/", false)
 		# is a plugin script?
@@ -141,8 +146,8 @@ static func build_test_suite_path(resource_path :String) -> String:
 			for index in range(3, paths.size()):
 				test_suite_path += "/" + paths[index]
 		else:
-			test_suite_path = paths[0] + "//" + paths[1] + "/test"
-			for index in range(2, paths.size()):
+			test_suite_path = paths[0] + "//" + "test"
+			for index in range(1, paths.size()):
 				test_suite_path += "/" + paths[index]
 	return test_suite_path.replace(file_name, "%sTest" % file_name)
 
@@ -185,7 +190,7 @@ static func add_test_case(resource_path :String, func_name :String)  -> Result:
 	var script := load(resource_path) as GDScript
 	script.source_code +=\
 """
-func test_${func_name}():
+func test_${func_name}() -> void:
 	# remove this line and complete your test
 	assert_not_yet_implemented()
 """.replace("${func_name}", func_name)
