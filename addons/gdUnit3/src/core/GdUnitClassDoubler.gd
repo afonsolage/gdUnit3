@@ -11,7 +11,16 @@ const EXCLUDE_VIRTUAL_FUNCTIONS = [
 	"_set", 
 	"_to_string",
 	# Resource
-	"_setup_local_to_scene"]
+	"_setup_local_to_scene",
+	# Node
+	'_enter_tree',
+	'_exit_tree',
+	'_process',
+	'_draw',
+	'_physics_process',
+	'_input',
+	'_unhandled_input',
+	'_unhandled_key_input']
 const EXCLUDE_FUNCTIONS = ["new", "free", "get_instance_id"]
 
 static func extract_class_functions(clazz_name :String, script_path :PoolStringArray) -> Array:

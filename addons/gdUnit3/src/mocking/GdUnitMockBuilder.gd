@@ -92,9 +92,19 @@ static func do_push_errors(enabled :bool):
 static func is_push_error_enabled() -> bool:
 	return _config["push_errors"]
 
-static func build(clazz, mock_mode :String, memory_pool :int, debug_write = false):
+static func build(clazz, mock_mode :String, memory_pool :int, instanciate = true, debug_write = false):
 	var push_errors := is_push_error_enabled()
-	if not is_mockable(clazz, push_errors):
+	
+	if clazz is PackedScene or (clazz is String and clazz.ends_with(".tscn")):
+		var packed_scene = clazz if clazz is PackedScene else load(clazz)
+		var scene_instance = packed_scene.instance()
+		var script_path = scene_instance.get_script().get_path()
+		var mock = build(script_path, mock_mode, memory_pool, false)
+		scene_instance.set_script(mock)
+		scene_instance.__set_singleton()
+		scene_instance.__set_mode(mock_mode)
+		return scene_instance
+	elif not is_mockable(clazz, push_errors):
 		return null
 	
 	var clazz_name :String
@@ -120,10 +130,13 @@ static func build(clazz, mock_mode :String, memory_pool :int, debug_write = fals
 		push_error("Critical!!!, MockBuilder error, please contact the developer.")
 		return null
 		
-	var mock_instance = mock.new()
-	mock_instance.__set_singleton()
-	mock_instance.__set_mode(mock_mode)
-	return GdUnitTools.register_auto_free(mock_instance, memory_pool)
+	if instanciate:
+		var mock_instance = mock.new()
+		mock_instance.__set_singleton()
+		mock_instance.__set_mode(mock_mode)
+		return GdUnitTools.register_auto_free(mock_instance, memory_pool)
+	else:
+		return mock
 
 static func is_mockable(clazz, push_errors :bool=false) -> bool:
 	var clazz_type := typeof(clazz)
