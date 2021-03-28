@@ -66,8 +66,6 @@ static func get_extends_clazz(clazz_name :String, clazz_path :PoolStringArray) -
 	# for not public script classes use the full class path
 	if not clazz_path.empty():
 		return "'%s'" % clazz_path[0]
-	elif not ClassDB.class_exists(clazz_name):
-		return "'%s'" % clazz_path[0]
 	return clazz_name
 
 # double all functions of given instance
