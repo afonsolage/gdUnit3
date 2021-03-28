@@ -114,22 +114,6 @@ static func build(clazz, mock_mode :String, memory_pool :int, instanciate = true
 	else:
 		clazz_name = GdObjects.extract_class_name_from_class_path(clazz_path)
 	
-	if "_" in clazz_name or clazz_name == clazz_name.to_lower():
-		var result = PoolStringArray()
-		var prev_is_underscore = false
-		for ch in clazz_name:
-			if ch=='_':
-				prev_is_underscore = true
-			else:
-				if prev_is_underscore:
-					result.append(ch.to_upper())
-				else:
-					result.append(ch)
-				prev_is_underscore = false
-
-		result[0] = result[0].to_upper()
-		clazz_name = result.join('')
-	
 	var function_doubler := MockFunctionDoubler.new(push_errors)
 	var lines := load_template(GdUnitMockImpl, clazz_name, clazz_path)
 	lines += double_functions(clazz_name, clazz_path, function_doubler)
