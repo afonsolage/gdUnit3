@@ -5,7 +5,8 @@ extends Reference
 const EXCLUDE_VIRTUAL_FUNCTIONS = [
 	# Object
 	"_get", 
-	"_get_property_list", 
+	"_get_property_list",
+	"emit_signal",
 	#"_init", 
 	"_notification", 
 	"_set", 
@@ -20,7 +21,11 @@ const EXCLUDE_VIRTUAL_FUNCTIONS = [
 	'_physics_process',
 	'_input',
 	'_unhandled_input',
-	'_unhandled_key_input']
+	'_unhandled_key_input',
+	'rpc',
+	'rpc_id',
+	'rpc_unreliable',
+	'rpc_unreliable_id']
 const EXCLUDE_FUNCTIONS = ["new", "free", "get_instance_id"]
 
 static func extract_class_functions(clazz_name :String, script_path :PoolStringArray) -> Array:
