@@ -57,6 +57,8 @@ static func get_extends_clazz(clazz_name :String, clazz_path :PoolStringArray) -
 	# handle snake_case class names, only if clazz path available and is a GdScript
 	if "_" in clazz_name and not clazz_path.empty() and (clazz_path[0].find(".gd") != -1):
 		return "'%s'" % clazz_path[0]
+	elif not ClassDB.class_exists(clazz_name):
+		return "'%s'" % clazz_path[0]
 	return clazz_name
 
 # double all functions of given instance
